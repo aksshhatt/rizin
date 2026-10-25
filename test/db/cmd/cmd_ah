@@ -45,7 +45,6 @@ s 0x1337
 aha ppc
 ahb 16
 ahc 0x804804
-ahe 3,eax,+=
 ahf 0x12345
 ahF 0x10
 ahh
@@ -73,10 +72,10 @@ EOF
 EXPECT=<<EOF
 all:
  0x00000815 => immbase=17185
- 0x00001337 => arch='ppc' bits=16 jump=0x00804804 esil='3,eax,+=' fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
+ 0x00001337 => arch='ppc' bits=16 jump=0x00804804 fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
 --
 at 0x1337:
- 0x00001337 => arch='ppc' bits=16 jump=0x00804804 esil='3,eax,+=' fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
+ 0x00001337 => arch='ppc' bits=16 jump=0x00804804 fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
 --
 at 0xdeadbeef
  0x00001337 => arch='ppc' bits=16
@@ -92,7 +91,6 @@ s 0x1337
 aha ppc
 ahb 16
 ahc 0x804804
-ahe 3,eax,+=
 ahf 0x12345
 ahF 0x10
 ahh
@@ -114,10 +112,10 @@ EOF
 EXPECT=<<EOF
 all:
  0x00000815 => immbase=17185
- 0x00001337 => arch='ppc' bits=16 jump=0x00804804 esil='3,eax,+=' fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
+ 0x00001337 => arch='ppc' bits=16 jump=0x00804804 fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
 --
 at 0x1337:
- 0x00001337 => arch='ppc' bits=16 jump=0x00804804 esil='3,eax,+=' fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
+ 0x00001337 => arch='ppc' bits=16 jump=0x00804804 fail=0x00012345 stackframe=0x10 high=true immbase=10 opcode='foo a0,33' ptr=0xc0ff33 ret=0x0000002a size=4 syntax='jz' type='call'
 EOF
 RUN
 
@@ -128,7 +126,6 @@ s 0x1337
 aha ppc
 ahb 16
 ahc 0x804804
-ahe 3,eax,+=
 ahf 0x12345
 ahF 0x10
 ahh
@@ -149,10 +146,10 @@ ahl.j @ 0x1337
 EOF
 EXPECT=<<EOF
 all:
-[{"addr":2069,"immbase":17185},{"addr":4919,"arch":"ppc","bits":16,"jump":8407044,"esil":"3,eax,+=","fail":74565,"stackframe":16,"high":true,"immbase":10,"opcode":"foo a0,33","ptr":12648243,"ret":42,"size":4,"syntax":"jz","type":"call"}]
+[{"addr":2069,"immbase":17185},{"addr":4919,"arch":"ppc","bits":16,"jump":8407044,"fail":74565,"stackframe":16,"high":true,"immbase":10,"opcode":"foo a0,33","ptr":12648243,"ret":42,"size":4,"syntax":"jz","type":"call"}]
 --
 at 0x1337:
-[{"addr":4919,"arch":"ppc","bits":16,"jump":8407044,"esil":"3,eax,+=","fail":74565,"stackframe":16,"high":true,"immbase":10,"opcode":"foo a0,33","ptr":12648243,"ret":42,"size":4,"syntax":"jz","type":"call"}]
+[{"addr":4919,"arch":"ppc","bits":16,"jump":8407044,"fail":74565,"stackframe":16,"high":true,"immbase":10,"opcode":"foo a0,33","ptr":12648243,"ret":42,"size":4,"syntax":"jz","type":"call"}]
 EOF
 RUN
 

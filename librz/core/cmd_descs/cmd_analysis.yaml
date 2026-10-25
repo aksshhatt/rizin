@@ -1892,22 +1892,6 @@ commands:
         summary: Delete jump/call address hint
         cname: analysis_hint_del_jump
         args: []
-      - name: ahe
-        summary: Set ESIL string hint
-        cname: analysis_hint_set_esil
-        args:
-          - name: string
-            type: RZ_CMD_ARG_TYPE_STRING
-        details:
-          - name: ""
-            entries:
-              - text: "ahe "
-                arg_str: '"3,eax,+="'
-                comment: "Replace ESIL VM analysis string"
-      - name: ahe-
-        summary: Delete ESIL string hint
-        cname: analysis_hint_del_esil
-        args: []
       - name: ahd
         summary: Set opcode hint
         cname: analysis_hint_set_opcode

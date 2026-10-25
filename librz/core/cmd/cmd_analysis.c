@@ -426,7 +426,7 @@ static void core_analysis_bytes_json(RzCore *core, const ut8 *buf, int len, int 
 		}
 		PJ_KN(pj, "jump", op->jump);
 		PJ_KN(pj, "fail", op->fail);
-		PJ_KS(pj, "esil", (hint && hint->esil) ? hint->esil : esilstr);
+		PJ_KS(pj, "esil", esilstr);
 
 		if (op->il_op) {
 			pj_k(pj, "rzil");
@@ -547,7 +547,7 @@ static void core_analysis_bytes_standard(RzCore *core, const ut8 *buf, int len, 
 		PRINTF_LN_STR("reg", op->reg);
 		PRINTF_LN_STR("ireg", op->ireg);
 		PRINTF_LN_NOT("scale", "%" PFMT64d "\n", op->scale, 0);
-		PRINTF_LN_STR("esil", hint && hint->esil ? hint->esil : esilstr);
+		PRINTF_LN_STR("esil", esilstr);
 		if (op->il_op) {
 			RzStrBuf *sbil = rz_strbuf_new("");
 			rz_il_op_effect_stringify(op->il_op, sbil, false);
@@ -4724,16 +4724,6 @@ RZ_IPI RzCmdStatus rz_analysis_hint_set_jump_handler(RzCore *core, int argc, con
 
 RZ_IPI RzCmdStatus rz_analysis_hint_del_jump_handler(RzCore *core, int argc, const char **argv) {
 	rz_analysis_hint_unset_jump(core->analysis, core->offset);
-	return RZ_CMD_STATUS_OK;
-}
-
-RZ_IPI RzCmdStatus rz_analysis_hint_set_esil_handler(RzCore *core, int argc, const char **argv) {
-	rz_analysis_hint_set_esil(core->analysis, core->offset, argv[1]);
-	return RZ_CMD_STATUS_OK;
-}
-
-RZ_IPI RzCmdStatus rz_analysis_hint_del_esil_handler(RzCore *core, int argc, const char **argv) {
-	rz_analysis_hint_unset_esil(core->analysis, core->offset);
 	return RZ_CMD_STATUS_OK;
 }
 

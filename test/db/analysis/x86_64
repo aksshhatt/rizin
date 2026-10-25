@@ -864,47 +864,6 @@ size: 261
 EOF
 RUN
 
-NAME=ahe
-FILE=malloc://512
-CMDS=<<EOF
-e asm.arch=x86
-e asm.bits=64
-ao~esil
-ahe test
-ao~esil
-EOF
-EXPECT=<<EOF
-esil: al,rax,+=[1],7,$o,of,:=,7,$s,sf,:=,$z,zf,:=,7,$c,cf,:=,$p,pf,:=,3,$c,af,:=
-esil: test
-EOF
-RUN
-
-NAME=ahe2
-FILE=malloc://512
-CMDS=<<EOF
-ahe test
-ao~^esil
-EOF
-EXPECT=<<EOF
-esil: test
-EOF
-RUN
-
-NAME=ahe 33,rax,=
-FILE=malloc://512
-CMDS=<<EOF
-e asm.arch=x86
-e asm.bits=64
-wx 000000
-ahe 33,rax,=
-aes
-ar rax
-EOF
-EXPECT=<<EOF
-rax = 0x0000000000000021
-EOF
-RUN
-
 NAME=delete memory format with Cf-
 FILE=bins/dmg/src/Hello
 CMDS=<<EOF

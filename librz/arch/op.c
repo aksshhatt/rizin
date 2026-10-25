@@ -343,11 +343,6 @@ RZ_API const char *rz_analysis_optype_to_string(int type) {
 	return "undefined";
 }
 
-RZ_API const char *rz_analysis_op_to_esil_string(RzAnalysis *analysis, RzAnalysisOp *op) {
-	return rz_strbuf_get(&op->esil);
-}
-
-// TODO: use esil here?
 RZ_API char *rz_analysis_op_to_string(RzAnalysis *analysis, RzAnalysisOp *op) {
 	RzAnalysisBlock *bb;
 	RzAnalysisFunction *f;
@@ -664,10 +659,6 @@ RZ_API int rz_analysis_op_hint(RzAnalysisOp *op, RzAnalysisHint *hint) {
 			/* XXX: this is not correct */
 			free(op->mnemonic);
 			op->mnemonic = rz_str_dup(hint->opcode);
-			changes++;
-		}
-		if (hint->esil) {
-			rz_strbuf_set(&op->esil, hint->esil);
 			changes++;
 		}
 		if (hint->size) {

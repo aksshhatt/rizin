@@ -46,9 +46,6 @@ static void addr_hint_record_fini(void *element, void *user) {
 	case RZ_ANALYSIS_ADDR_HINT_TYPE_OPCODE:
 		free(record->opcode);
 		break;
-	case RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL:
-		free(record->esil);
-		break;
 	case RZ_ANALYSIS_ADDR_HINT_TYPE_ENUM:
 		free(record->enum_name);
 		break;
@@ -263,12 +260,6 @@ RZ_API void rz_analysis_hint_set_opcode(RzAnalysis *a, ut64 addr, const char *op
 		r->opcode = rz_str_dup(opcode););
 }
 
-RZ_API void rz_analysis_hint_set_esil(RzAnalysis *a, ut64 addr, const char *esil) {
-	SET_HINT(RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL,
-		free(r->esil);
-		r->esil = rz_str_dup(esil););
-}
-
 RZ_API void rz_analysis_hint_set_type(RzAnalysis *a, ut64 addr, int type) {
 	SET_HINT(RZ_ANALYSIS_ADDR_HINT_TYPE_OPTYPE, r->optype = type;);
 }
@@ -307,10 +298,6 @@ RZ_API void rz_analysis_hint_set_bits(RzAnalysis *a, ut64 addr, int bits) {
 
 RZ_API void rz_analysis_hint_unset_size(RzAnalysis *a, ut64 addr) {
 	unset_addr_hint_record(a, RZ_ANALYSIS_ADDR_HINT_TYPE_SIZE, addr);
-}
-
-RZ_API void rz_analysis_hint_unset_esil(RzAnalysis *a, ut64 addr) {
-	unset_addr_hint_record(a, RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL, addr);
 }
 
 RZ_API void rz_analysis_hint_unset_opcode(RzAnalysis *a, ut64 addr) {
@@ -384,7 +371,6 @@ RZ_API void rz_analysis_hint_unset_bits(RzAnalysis *a, ut64 addr) {
 RZ_API void rz_analysis_hint_free(RzAnalysisHint *h) {
 	if (h) {
 		free(h->arch);
-		free(h->esil);
 		free(h->opcode);
 		free(h->syntax);
 		free(h->offset);
@@ -504,9 +490,6 @@ static void hint_merge(RzAnalysisHint *hint, RzAnalysisAddrHintRecord *record) {
 		break;
 	case RZ_ANALYSIS_ADDR_HINT_TYPE_TYPE_OFFSET:
 		hint->offset = rz_str_dup(record->type_offset);
-		break;
-	case RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL:
-		hint->esil = rz_str_dup(record->esil);
 		break;
 	case RZ_ANALYSIS_ADDR_HINT_TYPE_HIGH:
 		hint->high = true;

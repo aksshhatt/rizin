@@ -15,7 +15,6 @@ const RzAnalysisHint empty_hint = {
 	.arch = 0,
 	.opcode = NULL,
 	.syntax = NULL,
-	.esil = NULL,
 	.offset = NULL,
 	.type = 0,
 	.size = 0,
@@ -48,7 +47,6 @@ bool hint_equals(const RzAnalysisHint *a, const RzAnalysisHint *b) {
 	CHECK_STREQ(arch);
 	CHECK_STREQ(opcode);
 	CHECK_STREQ(syntax);
-	CHECK_STREQ(esil);
 	CHECK_STREQ(offset);
 	CHECK_STREQ(enum_name);
 #undef CHECK_STREQ
@@ -123,10 +121,6 @@ bool test_rz_analysis_addr_hints() {
 	cur.opcode = "myopcode";
 	CHECK
 
-	rz_analysis_hint_set_esil(analysis, 0x1337, "/,-rf,rm");
-	cur.esil = "/,-rf,rm";
-	CHECK
-
 	rz_analysis_hint_set_pointer(analysis, 0x1337, 0x4242);
 	cur.ptr = 0x4242;
 	CHECK
@@ -191,10 +185,6 @@ bool test_rz_analysis_addr_hints() {
 
 	rz_analysis_hint_unset_opcode(analysis, 0x1337);
 	cur.opcode = NULL;
-	CHECK
-
-	rz_analysis_hint_unset_esil(analysis, 0x1337);
-	cur.esil = NULL;
 	CHECK
 
 	rz_analysis_hint_unset_pointer(analysis, 0x1337);

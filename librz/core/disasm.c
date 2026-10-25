@@ -6111,10 +6111,9 @@ RZ_API int rz_core_print_disasm_json(RzCore *core, ut64 addr, ut8 *buf, int nb_b
 			pj_kn(pj, "val", op->val);
 		}
 
-		RzAnalysisHint *hint = cdb->hint;
 		pj_k(pj, "esil"); // split key and value to allow empty strings
 		const char *esil = RZ_STRBUF_SAFEGET(&op->esil);
-		pj_s(pj, hint && hint->esil ? hint->esil : (esil ? esil : ""));
+		pj_s(pj, esil ? esil : "");
 
 		pj_kb(pj, "refptr", op->refptr);
 

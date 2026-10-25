@@ -55,7 +55,6 @@ static const RzCmdDescDetail analysis_hint_set_arch_details[2];
 static const RzCmdDescDetail analysis_hint_set_bits_details[2];
 static const RzCmdDescDetail analysis_hint_set_high_details[2];
 static const RzCmdDescDetail analysis_hint_set_jump_details[2];
-static const RzCmdDescDetail analysis_hint_set_esil_details[2];
 static const RzCmdDescDetail analysis_hint_set_opcode_details[2];
 static const RzCmdDescDetail analysis_hint_set_size_details[2];
 static const RzCmdDescDetail analysis_hint_set_fail_details[2];
@@ -375,7 +374,6 @@ static const RzCmdDescArg analysis_hint_del_args[2];
 static const RzCmdDescArg analysis_hint_set_arch_args[2];
 static const RzCmdDescArg analysis_hint_set_bits_args[2];
 static const RzCmdDescArg analysis_hint_set_jump_args[2];
-static const RzCmdDescArg analysis_hint_set_esil_args[2];
 static const RzCmdDescArg analysis_hint_set_opcode_args[2];
 static const RzCmdDescArg analysis_hint_set_size_args[2];
 static const RzCmdDescArg analysis_hint_set_fail_args[2];
@@ -7189,37 +7187,6 @@ static const RzCmdDescArg analysis_hint_del_jump_args[] = {
 static const RzCmdDescHelp analysis_hint_del_jump_help = {
 	.summary = "Delete jump/call address hint",
 	.args = analysis_hint_del_jump_args,
-};
-
-static const RzCmdDescDetailEntry analysis_hint_set_esil_empty_detail_entries[] = {
-	{ .text = "ahe ", .arg_str = "\"3,eax,+=\"", .comment = "Replace ESIL VM analysis string" },
-	{ 0 },
-};
-static const RzCmdDescDetail analysis_hint_set_esil_details[] = {
-	{ .name = "", .entries = analysis_hint_set_esil_empty_detail_entries },
-	{ 0 },
-};
-static const RzCmdDescArg analysis_hint_set_esil_args[] = {
-	{
-		.name = "string",
-		.type = RZ_CMD_ARG_TYPE_STRING,
-		.flags = RZ_CMD_ARG_FLAG_LAST,
-
-	},
-	{ 0 },
-};
-static const RzCmdDescHelp analysis_hint_set_esil_help = {
-	.summary = "Set ESIL string hint",
-	.details = analysis_hint_set_esil_details,
-	.args = analysis_hint_set_esil_args,
-};
-
-static const RzCmdDescArg analysis_hint_del_esil_args[] = {
-	{ 0 },
-};
-static const RzCmdDescHelp analysis_hint_del_esil_help = {
-	.summary = "Delete ESIL string hint",
-	.args = analysis_hint_del_esil_args,
 };
 
 static const RzCmdDescDetailEntry analysis_hint_set_opcode_empty_detail_entries[] = {
@@ -23742,12 +23709,6 @@ RZ_IPI void rzshell_cmddescs_init(RzCore *core) {
 
 	RzCmdDesc *analysis_hint_del_jump_cd = rz_cmd_desc_argv_new(core->rcmd, ah_cd, "ahc-", rz_analysis_hint_del_jump_handler, &analysis_hint_del_jump_help);
 	rz_warn_if_fail(analysis_hint_del_jump_cd);
-
-	RzCmdDesc *analysis_hint_set_esil_cd = rz_cmd_desc_argv_new(core->rcmd, ah_cd, "ahe", rz_analysis_hint_set_esil_handler, &analysis_hint_set_esil_help);
-	rz_warn_if_fail(analysis_hint_set_esil_cd);
-
-	RzCmdDesc *analysis_hint_del_esil_cd = rz_cmd_desc_argv_new(core->rcmd, ah_cd, "ahe-", rz_analysis_hint_del_esil_handler, &analysis_hint_del_esil_help);
-	rz_warn_if_fail(analysis_hint_del_esil_cd);
 
 	RzCmdDesc *analysis_hint_set_opcode_cd = rz_cmd_desc_argv_new(core->rcmd, ah_cd, "ahd", rz_analysis_hint_set_opcode_handler, &analysis_hint_set_opcode_help);
 	rz_warn_if_fail(analysis_hint_set_opcode_cd);

@@ -789,6 +789,28 @@ static bool test_migrate_v24_v25_asm_demangle() {
 	mu_end;
 }
 
+static bool test_migrate_v26_v27_esil_hints() {
+	RzProject *prj = rz_project_load_file_raw("prj/v26-esil-hints.rzdb");
+	mu_assert_notnull(prj, "load raw project");
+	RzSerializeResultInfo *res = rz_serialize_result_info_new();
+	bool s = rz_project_migrate_v26_v27(prj, res);
+	mu_assert_true(s, "migrate success");
+
+	Sdb *core_db = sdb_ns(prj, "core", false);
+	mu_assert_notnull(core_db, "core ns");
+	Sdb *analysis_db = sdb_ns(core_db, "analysis", false);
+	mu_assert_notnull(analysis_db, "analysis ns");
+	Sdb *hints_db = sdb_ns(analysis_db, "hints", false);
+	mu_assert_notnull(hints_db, "hints ns");
+	mu_assert_null(sdb_const_get(hints_db, "0x1000"), "esil-only hint removed");
+	mu_assert_streq(sdb_const_get(hints_db, "0x1004"), "{\"jump\":4096}", "esil dropped from hint");
+	mu_assert_streq(sdb_const_get(hints_db, "0x1008"), "{\"immbase\":10}", "other hint untouched");
+
+	rz_serialize_result_info_free(res);
+	rz_project_free(prj);
+	mu_end;
+}
+
 /// Load project of given version from file into core and check the log for migration success messages
 #define BEGIN_LOAD_TEST(core, version, file) \
 	do { \
@@ -1201,6 +1223,21 @@ static bool test_load_v22_gadget_config() {
 	mu_end;
 }
 
+static bool test_load_v26_esil_hints() {
+	RzCore *core = rz_core_new();
+	BEGIN_LOAD_TEST(core, 26, "prj/v26-esil-hints.rzdb");
+	const RzVector /*<const RzAnalysisAddrHintRecord>*/ *hints = rz_analysis_addr_hints_at(core->analysis, 0x1000);
+	mu_assert_true(rz_vector_empty(hints), "esil-only hint removed");
+	hints = rz_analysis_addr_hints_at(core->analysis, 0x1004);
+	mu_assert_notnull(hints, "jump hint kept");
+	mu_assert_eq(hints->len, 1, "only jump hint left");
+	const RzAnalysisAddrHintRecord *record = rz_vector_index_ptr(hints, 0);
+	mu_assert_eq(record->type, RZ_ANALYSIS_ADDR_HINT_TYPE_JUMP, "jump hint type");
+	mu_assert_eq(record->jump, 0x1000, "jump hint value");
+	rz_core_free(core);
+	mu_end;
+}
+
 int all_tests() {
 	mu_run_test(test_migrate_v1_v2_noreturn);
 	mu_run_test(test_migrate_v1_v2_noreturn_empty);
@@ -1228,6 +1265,7 @@ int all_tests() {
 	mu_run_test(test_migrate_v22_v23_enum);
 	mu_run_test(test_migrate_v23_v24_bitfield);
 	mu_run_test(test_migrate_v24_v25_asm_demangle);
+	mu_run_test(test_migrate_v26_v27_esil_hints);
 	mu_run_test(test_load_v1_noreturn);
 	mu_run_test(test_load_v1_noreturn_empty);
 	mu_run_test(test_load_v1_unknown_type);
@@ -1252,6 +1290,7 @@ int all_tests() {
 	mu_run_test(test_load_v16);
 	mu_run_test(test_load_v17);
 	mu_run_test(test_load_v22_gadget_config);
+	mu_run_test(test_load_v26_esil_hints);
 	return tests_passed != tests_run;
 }
 

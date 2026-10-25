@@ -812,6 +812,88 @@ RZ_API bool rz_project_migrate_v25_v26(RzProject *prj, RzSerializeResultInfo *re
 	return true;
 }
 
+// --
+// Migration 26 -> 27
+//
+// Changes:
+//      Removed ESIL hints ("ahe"). The "esil" key is dropped from every record
+//      in "/core/analysis/hints" and records left empty are removed.
+
+typedef struct {
+	Sdb *hints_db;
+	RzList /*<char *>*/ *empty_keys; ///< deferred for deletion from the sdb
+} V26V27HintsCtx;
+
+static bool v26_v27_hints_foreach_cb(void *user, const SdbKv *kv) {
+	V26V27HintsCtx *ctx = user;
+	const char *k = sdbkv_key(kv);
+	const char *v = sdbkv_value(kv);
+	if (!strstr(v, "\"esil\"")) {
+		return true;
+	}
+	char *json_str = rz_str_dup(v);
+	if (!json_str) {
+		return true;
+	}
+	RzJson *j = rz_json_parse(json_str);
+	if (!j || j->type != RZ_JSON_OBJECT) {
+		rz_json_free(j);
+		free(json_str);
+		return true;
+	}
+	PJ *pj = pj_new();
+	if (!pj) {
+		rz_json_free(j);
+		free(json_str);
+		return false;
+	}
+	pj_o(pj);
+	bool empty = true;
+	for (RzJson *child = j->children.first; child; child = child->next) {
+		if (!strcmp(child->key, "esil")) {
+			continue;
+		}
+		rz_json_to_pj(child, pj, true);
+		empty = false;
+	}
+	pj_end(pj);
+	if (empty) {
+		rz_list_push(ctx->empty_keys, rz_str_dup(k));
+	} else {
+		sdb_set(ctx->hints_db, k, pj_string(pj));
+	}
+	pj_free(pj);
+	rz_json_free(j);
+	free(json_str);
+	return true;
+}
+
+RZ_API bool rz_project_migrate_v26_v27(RzProject *prj, RzSerializeResultInfo *res) {
+	Sdb *core_db;
+	RZ_SERIALIZE_SUB(prj, core_db, res, "core", return false;);
+	Sdb *analysis_db;
+	RZ_SERIALIZE_SUB(core_db, analysis_db, res, "analysis", return false;);
+	Sdb *hints_db = sdb_ns(analysis_db, "hints", false);
+	if (!hints_db) {
+		return true;
+	}
+	V26V27HintsCtx ctx = {
+		.hints_db = hints_db,
+		.empty_keys = rz_list_newf(free),
+	};
+	if (!ctx.empty_keys) {
+		return false;
+	}
+	sdb_foreach(hints_db, v26_v27_hints_foreach_cb, &ctx);
+	RzListIter *it;
+	char *k;
+	rz_list_foreach (ctx.empty_keys, it, k) {
+		sdb_remove(hints_db, k);
+	}
+	rz_list_free(ctx.empty_keys);
+	return true;
+}
+
 static bool (*const migrations[])(RzProject *prj, RzSerializeResultInfo *res) = {
 	rz_project_migrate_v1_v2,
 	rz_project_migrate_v2_v3,
@@ -838,6 +920,7 @@ static bool (*const migrations[])(RzProject *prj, RzSerializeResultInfo *res) = 
 	rz_project_migrate_v23_v24,
 	rz_project_migrate_v24_v25,
 	rz_project_migrate_v25_v26,
+	rz_project_migrate_v26_v27,
 };
 
 /// Migrate the given project to the current version in-place

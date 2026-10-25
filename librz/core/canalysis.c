@@ -1112,9 +1112,6 @@ static void print_hint_h_format(RzCons *cons, HintNode *node) {
 			case RZ_ANALYSIS_ADDR_HINT_TYPE_TYPE_OFFSET:
 				rz_cons_printf(cons, " offset='%s'", record->type_offset);
 				break;
-			case RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL:
-				rz_cons_printf(cons, " esil='%s'", record->esil);
-				break;
 			case RZ_ANALYSIS_ADDR_HINT_TYPE_HIGH:
 				rz_cons_printf(cons, " high=true");
 				break;
@@ -1195,9 +1192,6 @@ static void hint_node_print(RzCons *cons, HintNode *node, RzOutputMode mode, PJ 
 					break;
 				case RZ_ANALYSIS_ADDR_HINT_TYPE_TYPE_OFFSET:
 					pj_ks(pj, "offset", record->type_offset);
-					break;
-				case RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL:
-					pj_ks(pj, "esil", record->esil);
 					break;
 				case RZ_ANALYSIS_ADDR_HINT_TYPE_HIGH:
 					pj_kb(pj, "high", true);

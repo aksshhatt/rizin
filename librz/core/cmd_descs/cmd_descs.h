@@ -805,10 +805,6 @@ RZ_IPI RzCmdStatus rz_analysis_hint_del_high_handler(RzCore *core, int argc, con
 RZ_IPI RzCmdStatus rz_analysis_hint_set_jump_handler(RzCore *core, int argc, const char **argv);
 // "ahc-"
 RZ_IPI RzCmdStatus rz_analysis_hint_del_jump_handler(RzCore *core, int argc, const char **argv);
-// "ahe"
-RZ_IPI RzCmdStatus rz_analysis_hint_set_esil_handler(RzCore *core, int argc, const char **argv);
-// "ahe-"
-RZ_IPI RzCmdStatus rz_analysis_hint_del_esil_handler(RzCore *core, int argc, const char **argv);
 // "ahd"
 RZ_IPI RzCmdStatus rz_analysis_hint_set_opcode_handler(RzCore *core, int argc, const char **argv);
 // "ahd-"

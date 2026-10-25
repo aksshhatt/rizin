@@ -501,7 +501,6 @@ typedef enum rz_analysis_addr_hint_type_t {
 	RZ_ANALYSIS_ADDR_HINT_TYPE_OPTYPE,
 	RZ_ANALYSIS_ADDR_HINT_TYPE_OPCODE,
 	RZ_ANALYSIS_ADDR_HINT_TYPE_TYPE_OFFSET,
-	RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL,
 	RZ_ANALYSIS_ADDR_HINT_TYPE_HIGH,
 	RZ_ANALYSIS_ADDR_HINT_TYPE_VAL,
 	RZ_ANALYSIS_ADDR_HINT_TYPE_ENUM
@@ -520,7 +519,6 @@ typedef struct rz_analysis_addr_hint_record_t {
 		ut64 retval;
 		char *syntax;
 		char *opcode;
-		char *esil;
 		int optype;
 		ut64 size;
 		ut64 stackframe;
@@ -539,7 +537,6 @@ typedef struct rz_analysis_hint_t {
 	char *arch;
 	char *opcode;
 	char *syntax;
-	char *esil;
 	char *offset;
 	ut32 type;
 	ut64 size;
@@ -1990,7 +1987,6 @@ RZ_API void rz_analysis_hint_set_immbase(RzAnalysis *a, ut64 addr, int base);
 RZ_API void rz_analysis_hint_set_enum(RzAnalysis *a, ut64 addr, const char *enum_name);
 RZ_API void rz_analysis_hint_set_size(RzAnalysis *a, ut64 addr, ut64 size);
 RZ_API void rz_analysis_hint_set_opcode(RzAnalysis *a, ut64 addr, const char *str);
-RZ_API void rz_analysis_hint_set_esil(RzAnalysis *a, ut64 addr, const char *str);
 RZ_API void rz_analysis_hint_set_pointer(RzAnalysis *a, ut64 addr, ut64 ptr);
 RZ_API void rz_analysis_hint_set_ret(RzAnalysis *a, ut64 addr, ut64 val);
 RZ_API void rz_analysis_hint_set_high(RzAnalysis *a, ut64 addr);
@@ -2005,7 +2001,6 @@ RZ_API void rz_analysis_hint_unset_enum(RzAnalysis *a, ut64 addr);
 RZ_API void rz_analysis_hint_unset_nword(RzAnalysis *a, ut64 addr);
 RZ_API void rz_analysis_hint_unset_size(RzAnalysis *a, ut64 addr);
 RZ_API void rz_analysis_hint_unset_type(RzAnalysis *a, ut64 addr);
-RZ_API void rz_analysis_hint_unset_esil(RzAnalysis *a, ut64 addr);
 RZ_API void rz_analysis_hint_unset_opcode(RzAnalysis *a, ut64 addr);
 RZ_API void rz_analysis_hint_unset_syntax(RzAnalysis *a, ut64 addr);
 RZ_API void rz_analysis_hint_unset_pointer(RzAnalysis *a, ut64 addr);

@@ -29,7 +29,7 @@
  *
  *   /hints
  *     0x<addr>={arch?:<str|null>,bits?:<int|null>,toff?:<string>,nword?:<int>,jump?:<ut64>,fail?:<ut64>,newbits?:<int>,
- *               immbase?:<int>,ptr?:<ut64>,ret?:<ut64>,syntax?:<str>,opcode?:<str>,esil?:<str>,optype?:<int>,
+ *               immbase?:<int>,ptr?:<ut64>,ret?:<ut64>,syntax?:<str>,opcode?:<str>,optype?:<int>,
  *               size?:<ut64>,frame?:<ut64>,val?:<ut64>,high?:<bool>}
  *   /classes
  *     <direct dump of RzAnalysis.sdb_classes>
@@ -1838,9 +1838,6 @@ static bool hints_acc_store_cb(void *user, const ut64 addr, const void *v) {
 			case RZ_ANALYSIS_ADDR_HINT_TYPE_TYPE_OFFSET:
 				pj_ks(j, "toff", record->type_offset);
 				break;
-			case RZ_ANALYSIS_ADDR_HINT_TYPE_ESIL:
-				pj_ks(j, "esil", record->esil);
-				break;
 			case RZ_ANALYSIS_ADDR_HINT_TYPE_HIGH:
 				pj_kb(j, "high", true);
 				break;
@@ -1886,7 +1883,6 @@ enum {
 	HINTS_FIELD_OPTYPE,
 	HINTS_FIELD_OPCODE,
 	HINTS_FIELD_TYPE_OFFSET,
-	HINTS_FIELD_ESIL,
 	HINTS_FIELD_HIGH,
 	HINTS_FIELD_VAL,
 	HINTS_FIELD_ENUM
@@ -2002,12 +1998,6 @@ static bool hints_load_cb(void *user, const SdbKv *kv) {
 			}
 			rz_analysis_hint_set_offset(analysis, addr, child->str_value);
 			break;
-		case HINTS_FIELD_ESIL:
-			if (child->type != RZ_JSON_STRING) {
-				break;
-			}
-			rz_analysis_hint_set_esil(analysis, addr, child->str_value);
-			break;
 		case HINTS_FIELD_HIGH:
 			if (child->type != RZ_JSON_BOOLEAN || !child->num.u_value) {
 				break;
@@ -2062,7 +2052,6 @@ RZ_API bool rz_serialize_analysis_hints_load(RZ_NONNULL Sdb *db, RZ_NONNULL RzAn
 	rz_key_parser_add(ctx.parser, "optype", HINTS_FIELD_OPTYPE);
 	rz_key_parser_add(ctx.parser, "opcode", HINTS_FIELD_OPCODE);
 	rz_key_parser_add(ctx.parser, "toff", HINTS_FIELD_TYPE_OFFSET);
-	rz_key_parser_add(ctx.parser, "esil", HINTS_FIELD_ESIL);
 	rz_key_parser_add(ctx.parser, "high", HINTS_FIELD_HIGH);
 	rz_key_parser_add(ctx.parser, "val", HINTS_FIELD_VAL);
 	rz_key_parser_add(ctx.parser, "enum", HINTS_FIELD_ENUM);
