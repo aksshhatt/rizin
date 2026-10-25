@@ -27,6 +27,46 @@ bool test_rz_debug_use(void) {
 	mu_end;
 }
 
+bool test_rz_debug_esil_watch(void) {
+	RzBreakpointContext bp_ctx = { 0 };
+	RzDebug *a = rz_debug_new(&bp_ctx);
+	RzDebug *b = rz_debug_new(&bp_ctx);
+	mu_assert_notnull(a, "rz_debug_new () failed");
+	mu_assert_notnull(b, "rz_debug_new () failed");
+
+	mu_assert_true(a->esil_prestep, "prestep is enabled by default");
+	rz_debug_esil_prestep(a, false);
+	mu_assert_false(a->esil_prestep, "prestep disabled");
+	mu_assert_true(b->esil_prestep, "prestep is per-instance");
+
+	mu_assert_true(rz_debug_esil_watch_empty(a), "no watchpoints initially");
+	rz_debug_esil_watch(a, RZ_PERM_RW, 'r', "rax");
+	rz_debug_esil_watch(a, RZ_PERM_X, 'm', "0x1000..0x2000");
+	mu_assert_false(rz_debug_esil_watch_empty(a), "watchpoints added");
+	mu_assert_true(rz_debug_esil_watch_empty(b), "watchpoints are per-instance");
+
+	RzList *list = rz_debug_esil_watch_list(a);
+	mu_assert_eq(rz_list_length(list), 2, "watchpoint count");
+	RzDebugEsilWatchpoint *ew = rz_list_first(list);
+	mu_assert_eq(ew->rwx, RZ_PERM_RW, "watchpoint perm");
+	mu_assert_eq(ew->dev, 'r', "watchpoint dev");
+	mu_assert_streq(ew->expr, "rax", "watchpoint expr");
+	ew = rz_list_last(list);
+	mu_assert_eq(ew->rwx, RZ_PERM_X, "watchpoint perm");
+	mu_assert_eq(ew->dev, 'm', "watchpoint dev");
+	mu_assert_streq(ew->expr, "0x1000..0x2000", "watchpoint expr");
+	mu_assert_null(rz_debug_esil_watch_list(b), "watchpoints are per-instance");
+
+	rz_debug_esil_watch_reset(a);
+	mu_assert_true(rz_debug_esil_watch_empty(a), "watchpoints reset");
+
+	// left over watchpoints are freed with the RzDebug instance
+	rz_debug_esil_watch(b, RZ_PERM_W, 'm', "0x4000");
+	rz_debug_free(a);
+	rz_debug_free(b);
+	mu_end;
+}
+
 bool test_rz_debug_reg_offset(void) {
 #if __linux__
 #ifdef __x86_64__
@@ -750,6 +790,7 @@ static bool test_debug_hw_watch(void) {
 int all_tests() {
 	RzCons *cons = rz_cons_new(); // there is some windows-specific code in debug that accesses the cons singleton
 	mu_run_test(test_rz_debug_use);
+	mu_run_test(test_rz_debug_esil_watch);
 	mu_run_test(test_rz_debug_reg_offset);
 	mu_run_test(test_debug_sw_bp);
 	mu_run_test(test_debug_sw_bp_multibits);

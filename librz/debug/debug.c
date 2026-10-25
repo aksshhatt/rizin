@@ -414,6 +414,7 @@ RZ_API RZ_OWN RzDebug *rz_debug_new(RZ_BORROW RZ_NONNULL RzBreakpointContext *bp
 	dbg->bp->baddr = 0;
 	dbg->nt_x86_xstate_supported = true;
 	dbg->hash = rz_hash_new();
+	dbg->esil_prestep = true;
 	return dbg;
 }
 
@@ -449,6 +450,7 @@ RZ_API void rz_debug_free(RzDebug *dbg) {
 	free(dbg->arch);
 	free(dbg->glob_libs);
 	free(dbg->glob_unlibs);
+	rz_list_free(dbg->esil_watchpoints);
 	free(dbg);
 }
 

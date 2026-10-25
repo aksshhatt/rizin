@@ -321,6 +321,12 @@ typedef struct rz_debug_t {
 	size_t RtlpLFHKeyOffset; ///< Related to windows heap
 	RzInterrupt *intr;
 	RzCons *cons; // Should we have this here?
+
+	/* DebugESIL software watchpoints (see desil.c) */
+	RzList /*<RzDebugEsilWatchpoint *>*/ *esil_watchpoints;
+	ut64 esil_opc; ///< Address of the last instruction stepped via DebugESIL
+	bool esil_has_match; ///< Set when a DebugESIL watchpoint was hit
+	bool esil_prestep; ///< Step the debuggee before evaluating the ESIL expression
 } RzDebug;
 
 typedef struct rz_debug_desc_plugin_t {
