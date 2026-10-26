@@ -564,9 +564,7 @@ zoom.to=0
 /core/debug/breakpoints
 
 /core/file
-absolute=/home/kazarmy/=.bin
-raw==.bin
-relative==.bin
+relative=../bins/elf/ls
 
 /core/flags
 realnames=0
