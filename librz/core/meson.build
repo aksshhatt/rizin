@@ -124,7 +124,6 @@ rz_core_sources = [
   'tui/comments.c',
   'tui/config.c',
   'tui/define.c',
-  'tui/esil.c',
   'tui/flags.c',
   'tui/hud.c',
   'tui/modes.c',

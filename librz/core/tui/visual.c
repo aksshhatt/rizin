@@ -1934,7 +1934,6 @@ RZ_IPI void rz_core_visual_browse(RzCore *core, const char *input) {
 		" C  comments\n"
 		" d  debug traces\n"
 		" e  eval var configurations\n"
-		" E  esil debugger mode\n"
 		" f  flags\n"
 		" F  functions\n"
 		" g  graph\n"
@@ -1984,9 +1983,6 @@ RZ_IPI void rz_core_visual_browse(RzCore *core, const char *input) {
 			break;
 		case 'e': // "vbe"
 			rz_core_visual_config(core);
-			break;
-		case 'E': // "vbE"
-			rz_core_visual_esil(core);
 			break;
 		case 'c': // "vbc"
 			rz_core_visual_classes(core);

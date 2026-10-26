@@ -455,9 +455,6 @@ RZ_IPI void rz_core_visual_config(RzCore *core);
 /* tui/define.c */
 RZ_IPI void rz_core_visual_define(RzCore *core, const char *arg, int distance);
 
-/* tui/esil.c */
-RZ_IPI bool rz_core_visual_esil(RzCore *core);
-
 /* tui/flags.c */
 RZ_IPI int rz_core_visual_trackflags(RzCore *core);
 
